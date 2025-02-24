@@ -1,0 +1,22 @@
+{
+  "properties": [
+    {
+      "name": "auth.jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT secret.",
+      "defaultValue": "DO NOT USE THIS RANDOM SECRET"
+    },
+    {
+      "name": "auth.jwt.issuer",
+      "type": "java.lang.String",
+      "description": "Issuer of the JWT.",
+      "defaultValue": "http://catuns.xyz/"
+    },
+    {
+      "name": "auth.jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT token expiration in ms.",
+      "defaultValue": "36000000"
+    }
+  ]
+}

@@ -8,11 +8,12 @@
 		<version>3.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>xyz.catuns</groupId>
 	<artifactId>auth-spring-boot-starter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-starter-auth</name>
-	<description>Auth SpringBoot Starter</description>
+	<name>auth-spring-boot-starter</name>
+	<description>Auth SpringBoot Starter for Catuns.xyz</description>
 
 	<url/>
 	<licenses>
@@ -38,6 +39,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
@@ -71,5 +73,4 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 	</dependencies>
-
 </project>
