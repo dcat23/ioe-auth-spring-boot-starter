@@ -1,8 +1,9 @@
 package xyz.catuns.auth.jwt.token;
 
-import org.springframework.security.core.Authentication;
+import java.util.Date;
 
-public interface JwtToken {
-    String generate(Authentication auth, String jwtSecret);
-    Authentication validate(String token, String jwtSecret);
+public record JwtToken(
+        String token,
+        Date expiration
+) {
 }

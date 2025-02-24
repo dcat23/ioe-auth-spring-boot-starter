@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>xyz.catuns</groupId>
-	<artifactId>spring-boot-starter-auth</artifactId>
+	<artifactId>auth-spring-boot-starter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-boot-starter-auth</name>
-	<description>spring-boot-starter-auth</description>
+	<description>Auth SpringBoot Starter</description>
 
 	<url/>
 	<licenses>

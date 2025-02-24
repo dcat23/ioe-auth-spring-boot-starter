@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import xyz.catuns.auth.jwt.token.GenericJwtToken;
-import xyz.catuns.auth.jwt.token.JwtToken;
+import xyz.catuns.auth.jwt.token.JwtTokenGeneratorImpl;
+import xyz.catuns.auth.jwt.token.JwtTokenGenerator;
 
 @AutoConfiguration
 @EnableConfigurationProperties(JwtProperties.class)
@@ -21,11 +21,9 @@ public class JwtConfiguration {
 
 
     @Bean
-    JwtToken jwtTokenGenerator() {
-        return new GenericJwtToken(
+    JwtTokenGenerator jwtTokenGenerator() {
+        return new JwtTokenGeneratorImpl(
                 jwtProperties.issuer(),
-                jwtProperties.usernameKey(),
-                jwtProperties.authorityKey(),
                 jwtProperties.tokenExpiration()
         );
     }

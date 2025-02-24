@@ -8,16 +8,25 @@ import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import xyz.catuns.auth.jwt.token.JwtToken;
+import xyz.catuns.auth.jwt.token.JwtTokenGenerator;
 
 import java.io.IOException;
 
-@Component
+import static xyz.catuns.auth.jwt.JwtConstants.*;
+
 public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
 
-    private static final String JWT_SECRET_KEY = "auth.jwt.secret";
-    private static final String JWT_SECRET_DEFAULT_VALUE = "auth.jwt.secret";
+    /**
+     * Should be autowired into the security config.
+     * http.addFilterAfter(new JwtTokenGeneratorFilter(jwtTokenGenerator), BasicAuthenticationFilter.class)
+     */
+    private final JwtTokenGenerator jwtTokenGenerator;
+
+    public JwtTokenGeneratorFilter(JwtTokenGenerator jwtTokenGenerator) {
+        this.jwtTokenGenerator = jwtTokenGenerator;
+    }
 
     /**
      *
@@ -34,8 +43,8 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter {
         if (auth != null) {
             Environment env = getEnvironment();
             String secret = env.getProperty(JWT_SECRET_KEY, JWT_SECRET_DEFAULT_VALUE);
-            String jwtToken = JwtTokenGenerator.generateToken(auth, secret);
-            response.setHeader(JWT_HEADER, jwtToken);
+            JwtToken jwtToken = jwtTokenGenerator.generate(auth, secret);
+            response.setHeader(JWT_HEADER, jwtToken.token());
         }
         filterChain.doFilter(request, response);
     }

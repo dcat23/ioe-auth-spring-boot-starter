@@ -13,30 +13,35 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-public class GenericJwtToken implements JwtToken {
-    private final String JWT_ISSUER;
-    private final String JWT_USERNAME_KEY;
-    private final String JWT_AUTHORITY_KEY;
-    private final long JWT_TOKEN_EXPIRATION;
+import static xyz.catuns.auth.jwt.JwtConstants.JWT_AUTHORITY_KEY;
+import static xyz.catuns.auth.jwt.JwtConstants.JWT_USERNAME_KEY;
+
+public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
+
+    private final String jwtIssuer;
+    private final long jwtTokenExpiration;
 
 
-    public GenericJwtToken(String jwtIssuer, String jwtUsernameKey, String jwtAuthorityKey, long jwtTokenExpiration) {
-        JWT_ISSUER = jwtIssuer;
-        JWT_USERNAME_KEY = jwtUsernameKey;
-        JWT_AUTHORITY_KEY = jwtAuthorityKey;
-        JWT_TOKEN_EXPIRATION = jwtTokenExpiration;
+    public JwtTokenGeneratorImpl(String jwtIssuer, long jwtTokenExpiration) {
+        this.jwtIssuer = jwtIssuer;
+        this.jwtTokenExpiration = jwtTokenExpiration;
     }
 
-    public String generate(Authentication auth, String jwtSecret) {
+    @Override
+    public JwtToken generate(Authentication auth, String jwtSecret) {
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-        return Jwts.builder().issuer(JWT_ISSUER).subject(auth.getName())
+        Date tokenExpiration = expiration();
+        String token = Jwts.builder().issuer(jwtIssuer).subject(auth.getName())
                 .claim(JWT_USERNAME_KEY, auth.getName())
                 .claim(JWT_AUTHORITY_KEY, extractAuthorities(auth))
                 .issuedAt(new Date())
-                .expiration(expiration())
+                .expiration(tokenExpiration)
                 .signWith(secretKey).compact();
+
+        return new JwtToken(token, tokenExpiration);
     }
 
+    @Override
     public Authentication validate(String token, String jwtSecret) {
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         Claims claims = Jwts.parser().verifyWith(secretKey).build()
@@ -49,12 +54,20 @@ public class GenericJwtToken implements JwtToken {
 
     private Date expiration() {
         long nowMillis = System.currentTimeMillis();
-        return new Date(nowMillis + JWT_TOKEN_EXPIRATION);
+        return new Date(nowMillis + jwtTokenExpiration);
     }
 
     private String extractAuthorities(Authentication auth) {
         return auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+    }
+
+    public String getIssuer() {
+        return jwtIssuer;
+    }
+
+    public long getExpiration() {
+        return jwtTokenExpiration;
     }
 }
